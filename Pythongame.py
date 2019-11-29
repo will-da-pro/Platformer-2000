@@ -34,14 +34,15 @@ def main(stage):
     pygame.mixer.music.load("assets/sound.mp3")
     pygame.mixer.music.play()
     playerObj = playerClass(100, 550)
-
+    buttonObjStart = buttonClass(green, 700, 50, 250, 100, "Click to play")
+    buttonObjMenu = buttonClass(red, 2, 2, 250, 100, "Menu")
     platformGroup = pygame.sprite.Group()
     playerGroup = pygame.sprite.Group()
     backGround = Surface((winWidth, winHeight))
     backGround.convert()
 
     backGround.fill(Color("#69FFFF"))
-        
+    playing = False
     upKey = downKey = rightKey = leftKey = False
 
     platformList = []
@@ -114,18 +115,46 @@ def main(stage):
         screen.blit(backGround,(0,0))
 
 
-        cameraObj.update(playerObj)
-        playerObj.update(upKey, downKey, rightKey, leftKey, platformList)
-        for i in playerGroup:
-            screen.blit(i.image, cameraObj.Apply(i))
-        for x in platformGroup:
-            screen.blit(x.image, cameraObj.Apply(x))
-        screen.blit(pygame.image.load('assets/startBack.png').convert_alpha(), (0, 0))        
-        text1 = monospace.render("(x, y)- "+ str(playerObj.rect.x)+ ", "+ str(playerObj.rect.y), 1, black)
-        screen.blit(text1, (1400, 0))
-        timer.tick(60)
-        if playerObj.stageD == 2:
-            backGround.fill(Color('#c2c5cc'))
+        if not playing:
+            screen.blit(pygame.image.load('assets/startBack.png').convert_alpha(), (0, 0))
+            buttonObjStart.draw(screen, 60, (0,0,0))
+            for event in pygame.event.get():
+                pos = pygame.mouse.get_pos()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if buttonObjStart.isOver(pos):
+                        playing = True
+                if event.type == pygame.MOUSEMOTION:
+                    if buttonObjStart.isOver(pos):
+                        buttonObjStart.color = (6, 96, 0)
+                    else:
+                        buttonObjStart.color = green
+        if playing:
+            
+
+            cameraObj.update(playerObj)
+            playerObj.update(upKey, downKey, rightKey, leftKey, platformList)
+            for i in playerGroup:
+                screen.blit(i.image, cameraObj.Apply(i))
+            for x in platformGroup:
+                screen.blit(x.image, cameraObj.Apply(x))
+       
+            text1 = monospace.render("(x, y)- "+ str(playerObj.rect.x/50)+ ", "+ str(playerObj.rect.y/50), 1, black)
+            screen.blit(text1, (1400, 0))
+            timer.tick(60)
+            if playerObj.stageD == 2:
+                backGround.fill(Color('#c2c5cc'))
+        
+##            buttonObjMenu.draw(screen, 60, (0, 0, 0))
+##            for event in pygame.event.get():
+##                pos = pygame.mouse.get_pos()
+##                if event.type == pygame.MOUSEBUTTONDOWN:
+##                    if buttonObjMenu.isOver(pos):
+##                        pass
+##                if event.type == pygame.MOUSEMOTION:
+##                    if buttonObjMenu.isOver(pos):
+##                        buttonObjMenu.color = (193, 0, 0)
+##                    else:
+##                        buttonObjMenu.color = red
         
 
 
@@ -161,7 +190,34 @@ class blockClassGrass(entity):
         self.image = (pygame.image.load('assets/stoneWithGrass.png').convert_alpha())
         self.image.convert()
         self.rect = Rect(x, y, 50, 50)
-    
+class buttonClass():
+    def __init__(self, color, x,y,width,height, text=''):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+
+    def draw(self,win, fontSize, outline=None):
+        #Call this method to draw the button on the screen
+        if outline:
+            pygame.draw.rect(win, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0)
+            
+        pygame.draw.rect(win, self.color, (self.x,self.y,self.width,self.height),0)
+        
+        if self.text != '':
+            font = pygame.font.SysFont('comicsans', fontSize)
+            text = font.render(self.text, 1, (0,0,0))
+            win.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))
+
+    def isOver(self, pos):
+        #Pos is the mouse position or a tuple of (x,y) coordinates
+        if pos[0] > self.x and pos[0] < self.x + self.width:
+            if pos[1] > self.y and pos[1] < self.y + self.height:
+                return True
+            
+        return False    
 class playerClass(entity):
     def __init__(self, x, y):
         entity.__init__(self)
