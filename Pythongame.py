@@ -24,14 +24,14 @@ stageDelta = stage
 gameRunning = True
 pygame.init()
 
-pygame.display.set_icon(pygame.image.load('icon.png'))
+pygame.display.set_icon(pygame.image.load('assets/icon.png'))
 pygame.display.set_caption('Platformer 2000')
 screen = pygame.display.set_mode(display, flags, depth)
 monospace = pygame.font.SysFont("monospace", 20)
 def main(stage):
     stageDelta = stage
     pygame.mixer.init()
-    pygame.mixer.music.load("sound.mp3")
+    pygame.mixer.music.load("assets/sound.mp3")
     pygame.mixer.music.play()
     playerObj = playerClass(100, 550)
 
@@ -120,7 +120,7 @@ def main(stage):
             screen.blit(i.image, cameraObj.Apply(i))
         for x in platformGroup:
             screen.blit(x.image, cameraObj.Apply(x))
-        screen.blit(pygame.image.load('startBack.png').convert_alpha(), (0, 0))        
+        screen.blit(pygame.image.load('assets/startBack.png').convert_alpha(), (0, 0))        
         text1 = monospace.render("(x, y)- "+ str(playerObj.rect.x)+ ", "+ str(playerObj.rect.y), 1, black)
         screen.blit(text1, (1400, 0))
         timer.tick(60)
@@ -151,14 +151,14 @@ class blockClass(entity):
     def __init__(self, x, y):
         entity.__init__(self)
         self.image = Surface((50, 50))
-        self.image = (pygame.image.load('stone.png').convert_alpha())
+        self.image = (pygame.image.load('assets/stone.png').convert_alpha())
         self.image.convert()
         self.rect = Rect(x, y, 50, 50)
 class blockClassGrass(entity):
     def __init__(self, x, y):
         entity.__init__(self)
         self.image = Surface((50, 50))
-        self.image = (pygame.image.load('stoneWithGrass.png').convert_alpha())
+        self.image = (pygame.image.load('assets/stoneWithGrass.png').convert_alpha())
         self.image.convert()
         self.rect = Rect(x, y, 50, 50)
     
@@ -169,7 +169,7 @@ class playerClass(entity):
         self.xvel = 0
         self.yvel = 0
         self.image = Surface((50, 100))
-        self.image = (pygame.image.load('player.png').convert_alpha())
+        self.image = (pygame.image.load('assets/player.png').convert_alpha())
         self.image.convert()
         self.rect = Rect(x, y, 50, 100)
         self.onGround = False
